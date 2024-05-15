@@ -3,7 +3,7 @@ spring:
     active: local
 
   datasource:
-    url: jdbc:h2:tcp://localhost/~/interro
+    url: jdbc:h2:~/interro #jdbc:h2:tcp://localhost/~/interro
     username: sa
     password:
     driver-class-name: org.h2.Driver
