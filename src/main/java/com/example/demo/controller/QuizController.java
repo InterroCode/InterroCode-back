@@ -13,6 +13,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.dto.QuestionRequest;
+import com.example.demo.dto.QuestionResponse;
+import com.example.demo.dto.Quiz;
 import com.example.demo.global.api.Result;
 
 import lombok.RequiredArgsConstructor;
@@ -46,7 +49,7 @@ public class QuizController {
     }
 
     @PostMapping
-    public QuestionResponse askQuestionFeedback(@RequestBody QuestionRequest questionRequest) {
+    public Result<QuestionResponse> askQuestionFeedback(@RequestBody QuestionRequest questionRequest) {
         BeanOutputParser<QuestionResponse> parser = new BeanOutputParser<>(QuestionResponse.class);
 
         String question = questionRequest.getQuestion();
@@ -83,6 +86,6 @@ public class QuizController {
         ChatResponse response = chatClient.call(prompt);
         String text = response.getResult().getOutput().getContent();
 
-        return parser.parse(text);
+        return new Result<>(HttpStatus.OK, "퀴즈 피드백 요청 성공", parser.parse(text));
     }
 }
