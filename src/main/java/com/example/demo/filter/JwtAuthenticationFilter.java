@@ -1,5 +1,6 @@
 package com.example.demo.filter;
 
+import com.example.demo.dto.Subject;
 import com.example.demo.service.jwt.JwtProvider;
 import org.springframework.web.filter.OncePerRequestFilter;
 import io.jsonwebtoken.JwtException;
@@ -35,12 +36,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             try {
                 Subject subject = jwtProvider.getSubject(atk);
                 String requestURI = request.getRequestURI();
-                if (subject.getType().equals("RTK") && !requestURI.equals("/user/renew")) {
+                if (subject.getType().equals("RTK") && !requestURI.equals("/api/auth/renew")) {
                     throw new JwtException("토큰을 확인하세요");
                 }
 
                 String username = subject.getEmail();
-                String authorities = subject.getAuthorities();
+                String authorities = "";
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(
                         username, null, AuthorityUtils.commaSeparatedStringToAuthorityList(authorities));
                 SecurityContextHolder.getContext().setAuthentication(auth);

@@ -44,17 +44,11 @@ public class SecurityConfig {
                         return config;
                     }
                 }))
-                .csrf((csrf) ->
-                        csrf.disable())
-//                        csrf.csrfTokenRequestHandler(reqeustHandler).ignoringRequestMatchers("/contact", "/register")
-//                                .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
-//                .addFilterAfter(new CsrfCookieFilter(), BasicAuthenticationFilter.class)
-//                .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
+                .csrf(csrf -> csrf.disable())
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests((requests) -> {
                     requests
-//                            .requestMatchers("/user").authenticated()
-                            .requestMatchers("/user/signup", "/user/signin", "/h2-console/**").permitAll()
+                            .requestMatchers("/api/auth/signup", "/api/auth/signin", "/h2-console/**").permitAll()
                             .anyRequest().authenticated();
                 });
         // h2-콘솔 접속 에러

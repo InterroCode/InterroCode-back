@@ -1,13 +1,24 @@
 package com.example.demo.service.jwt;
 
 import com.example.demo.dao.RedisDao;
+import com.example.demo.domain.User;
+import com.example.demo.dto.SignInRequestDTO;
+import com.example.demo.dto.Subject;
 import com.example.demo.dto.TokenResponseDTO;
 import com.example.demo.repository.UserRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+
+import javax.crypto.SecretKey;
+import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
@@ -26,26 +37,27 @@ public class JwtProvider {
     @Value("${spring.jwt.live.rtk}")
     private Long rtkLive;
 
-    public TokenResponseDTO createTokensBySignIn(UserResponseDTO userResponseDTO) throws JsonProcessingException {
-        User user = userRepository.findByEmail(userResponseDTO.getEmail()).get();
+    public TokenResponseDTO createTokensBySignIn(SignInRequestDTO request) throws JsonProcessingException {
+        User user = userRepository.findByEmail(request.getEmail()).get();
         Subject atkSubject = Subject.atk(
-                userResponseDTO.getId(),
-                userResponseDTO.getEmail(),
-                UserResponseDTO.populateAuthorities(user.getAuthorities()));
+                user.getId(),
+                user.getEmail()
+        );
 
         Subject rtkSubject = Subject.rtk(
-                userResponseDTO.getId(),
-                userResponseDTO.getEmail(),
-                UserResponseDTO.populateAuthorities(user.getAuthorities()));
+                user.getId(),
+                user.getEmail()
+        );
 
-        System.out.println(rtkSubject.getAuthorities());
+
         String atk = createToken(atkSubject, atkLive);
         String rtk = createToken(rtkSubject, rtkLive);
 
-        redisDao.setValues(userResponseDTO.getEmail(), rtk, Duration.ofMillis(rtkLive));
-
+        redisDao.setValues(user.getEmail(), rtk, Duration.ofMillis(rtkLive));
         return new TokenResponseDTO(atk, rtk);
     }
+
+
 
     // 토큰 생성 로직
     private String createToken(Subject subject, Long tokenLive) throws JsonProcessingException {
@@ -79,30 +91,30 @@ public class JwtProvider {
      * AccessToken 만료시 AccessToken과 RefreshToken을 재발급(갱신)함
      *
      */
-    public TokenResponseDTO renewToken(String rtk) throws JsonProcessingException {
-        Subject subject = getSubject(rtk);
-        String rtkInRedis = redisDao.getValues(subject.getEmail());
-
-        if (Objects.isNull(rtkInRedis) || !subject.getType().equals("RTK")) throw new BadCredentialsException("만료된 RefreshToken입니다.");
-
-        redisDao.deleteValues(subject.getEmail()); // 갱신을 위해 RefreshToken 제거
-
-        Subject atkSubject = Subject.atk(
-                subject.getId(),
-                subject.getEmail(),
-                subject.getAuthorities());
-
-        Subject rtkSubject = Subject.rtk(
-                subject.getId(),
-                subject.getEmail(),
-                subject.getAuthorities());
-
-        String newAtk = createToken(atkSubject, atkLive);
-        String newRtk = createToken(rtkSubject, rtkLive);
-
-        // RefreshToken 갱신
-        redisDao.setValues(subject.getEmail(), newRtk, Duration.ofMillis(rtkLive));
-
-        return new TokenResponseDTO(newAtk, newRtk);
-    }
+//    public TokenResponseDTO renewToken(String rtk) throws JsonProcessingException {
+//        Subject subject = getSubject(rtk);
+//        String rtkInRedis = redisDao.getValues(subject.getEmail());
+//
+//        if (Objects.isNull(rtkInRedis) || !subject.getType().equals("RTK")) throw new BadCredentialsException("만료된 RefreshToken입니다.");
+//
+//        redisDao.deleteValues(subject.getEmail()); // 갱신을 위해 RefreshToken 제거
+//
+//        Subject atkSubject = Subject.atk(
+//                subject.getId(),
+//                subject.getEmail(),
+//                subject.getAuthorities());
+//
+//        Subject rtkSubject = Subject.rtk(
+//                subject.getId(),
+//                subject.getEmail(),
+//                subject.getAuthorities());
+//
+//        String newAtk = createToken(atkSubject, atkLive);
+//        String newRtk = createToken(rtkSubject, rtkLive);
+//
+//        // RefreshToken 갱신
+//        redisDao.setValues(subject.getEmail(), newRtk, Duration.ofMillis(rtkLive));
+//
+//        return new TokenResponseDTO(newAtk, newRtk);
+//    }
 }

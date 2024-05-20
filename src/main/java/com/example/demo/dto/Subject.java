@@ -10,17 +10,17 @@ public class Subject {
     private final String email;
     private final String type;
 
-    private Subject(Long id, String email, String type, String authorities) {
+    private Subject(Long id, String email, String type) {
         this.id = id;
         this.email = email;
         this.type = type;
     }
 
-    public static Subject atk(Long id, String email, String authorities) {
-        return new Subject(id, email, "ATK", authorities);
+    public static Subject atk(Long id, String email) {
+        return new Subject(id, email, "ATK");
     }
 
-    public static Subject rtk(Long id, String email, String authorities) {
-        return new Subject(id, email, "RTK", authorities);
+    public static Subject rtk(Long id, String email) {
+        return new Subject(id, email, "RTK");
     }
 }
