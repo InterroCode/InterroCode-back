@@ -35,8 +35,9 @@ public class User extends BaseTimeEntity {
 
 	// @OneToMany(mappedBy = "user")
 	// private List<SavedQuiz> savedQuizzes = new ArrayList<>();
-
+	@Column(unique = true)
 	private String email;
+	
 	private String password;
 	private String nickname;
 	private Boolean deleteYn;
