@@ -1,5 +1,7 @@
 package com.example.demo.service;
 
+import java.util.Optional;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,10 @@ public class UserService {
     @Transactional
     public SignUpResponse register(SignUpRequest signUpRequest) {
         String encodedPassword = passwordEncoder.encode(signUpRequest.getPassword());
+        Optional<User> emailCheckUser = userRepository.findByEmail(signUpRequest.getEmail());
+        if(emailCheckUser.isPresent()){
+            return null;
+        }
         User newUser = User.builder()
                 .email(signUpRequest.getEmail())
                 .password(encodedPassword)
@@ -34,5 +40,10 @@ public class UserService {
                 .email(signUpRequest.getEmail())
                 .nickname(signUpRequest.getNickname())
                 .build();
+    }
+
+    public boolean checkEmailDuplicate(String email) {
+        Optional<User> emailCheckUser = userRepository.findByEmail(email);
+        return emailCheckUser.isPresent();
     }
 }
