@@ -25,12 +25,12 @@ public class UserController {
         SignUpResponse response = userService.register(signUpRequest);
         if (response == null) {
             return ResponseEntity.badRequest().body(ApiResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.BAD_REQUEST.value())
                     .message("회원가입에 실패했습니다.")
                     .build());
         }
         return ResponseEntity.ok().body(ApiResponse.builder()
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.value())
                 .message("회원가입에 성공했습니다.")
                 .data(response)
                 .build());
@@ -40,12 +40,12 @@ public class UserController {
     public ResponseEntity<ApiResponse> checkEmailDuplicate(@RequestBody SignUpRequest signUpRequest) {
         if (userService.checkEmailDuplicate(signUpRequest.getEmail())) {
             return ResponseEntity.badRequest().body(ApiResponse.builder()
-                    .status(HttpStatus.BAD_REQUEST)
+                    .status(HttpStatus.BAD_REQUEST.value())
                     .message("중복된 이메일입니다.")
                     .build());
         }
         return ResponseEntity.ok().body(ApiResponse.builder()
-                .status(HttpStatus.OK)
+                .status(HttpStatus.OK.value())
                 .message("사용 가능한 이메일입니다.")
                 .build());
     }
