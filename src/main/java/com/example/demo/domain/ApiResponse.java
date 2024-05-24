@@ -7,12 +7,12 @@ import lombok.Getter;
 
 @Getter
 public class ApiResponse<T> {
-    private HttpStatus status;
+    private int status;
     private String message;
     private T data;
 
     @Builder(toBuilder = true)
-    public ApiResponse(HttpStatus status, String message, T data) {
+    public ApiResponse(int status, String message, T data) {
         this.status = status;
         this.message = message;
         this.data = data;
