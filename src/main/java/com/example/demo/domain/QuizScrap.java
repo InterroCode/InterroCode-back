@@ -19,12 +19,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = PROTECTED)
 @Getter
 @Entity
-@Table(name = "saved_quiz")
-public class SavedQuiz {
+public class QuizScrap {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "saved_quiz_id")
+	@Column(name = "quiz_scrap_id")
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -40,7 +39,7 @@ public class SavedQuiz {
 	private String gptFeedback;
 
 	@Builder
-	public SavedQuiz(User user, String subject, String question, String answer, String gptFeedback) {
+	public QuizScrap(User user, String subject, String question, String answer, String gptFeedback) {
 		this.user = user;
 		this.subject = subject;
 		this.question = question;
