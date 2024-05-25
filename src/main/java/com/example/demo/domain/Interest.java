@@ -7,7 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,6 +23,10 @@ public class Interest {
 	@Column(name = "interest_id")
 	private Long id;
 
+	@OneToOne
+	@JoinColumn(name = "user_id")
+    private User user;
+
 	private String task;
 	private String mainLanguage;
 	private String subLanguage;
@@ -29,7 +34,8 @@ public class Interest {
 	private String subFramework;
 
 	@Builder
-	public Interest(String task, String mainLanguage, String subLanguage, String mainFramework, String subFramework) {
+	public Interest(User user, String task, String mainLanguage, String subLanguage, String mainFramework, String subFramework) {
+		this.user = user;
 		this.task = task;
 		this.mainLanguage = mainLanguage;
 		this.subLanguage = subLanguage;
