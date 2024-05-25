@@ -12,6 +12,8 @@ import com.example.demo.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 
+import org.apache.commons.lang3.StringUtils; // StringUtils를 사용하기 위해 추가
+
 @Service
 @RequiredArgsConstructor
 public class InterestService {
@@ -23,13 +25,13 @@ public class InterestService {
         if (!user.isPresent()) {
             return "해당 이메일을 가진 사용자가 존재하지 않습니다.";
         }
-        if (request.getTask().equals(null)) {
+        if (StringUtils.isEmpty(request.getTask())) {
             return "분야를 선택해주세요.";
         }
-        if (request.getMainFramework().equals(null)) {
+        if (StringUtils.isEmpty(request.getMainFramework())) {
             return "주요 프레임워크를 선택해주세요.";
         }
-        if (request.getMainLanguage().equals(null)) {
+        if (StringUtils.isEmpty(request.getMainLanguage())) {
             return "주요 언어를 선택해주세요.";
         }
         Interest interest = Interest.builder()
