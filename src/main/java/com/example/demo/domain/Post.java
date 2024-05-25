@@ -21,28 +21,28 @@ import lombok.NoArgsConstructor;
 @Entity
 public class Post extends BaseTimeEntity {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "post_id")
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
+    private Long id;
 
-	@ManyToOne
-	@JoinColumn(name = "user_id")
-	private User user;
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-	@Column(name = "post_writer")
-	private String writer;
+    @Column(name = "post_writer")
+    private String writer;
 
-	private String title;
-	private String content;
-	private Boolean deleteYn;
+    private String title;
+    private String content;
+    private Boolean deleteYn;
 
-	@Builder
-	public Post(User user, String writer, String title, String content, Boolean deleteYn) {
-		this.user = user;
-		this.writer = writer;
-		this.title = title;
-		this.content = content;
-		this.deleteYn = deleteYn;
-	}
+    @Builder
+    public Post(User user, String writer, String title, String content, Boolean deleteYn) {
+        this.user = user;
+        this.writer = writer;
+        this.title = title;
+        this.content = content;
+        this.deleteYn = deleteYn;
+    }
 }
